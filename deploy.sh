@@ -37,6 +37,13 @@ if [ ! -f "$APP/current/index.html" ] && [ -f "$APP/placeholder/index.html" ]; t
   echo "[$(ts)] tidak ada index.html di sumber -> placeholder disajikan" >> "$LOG"
 fi
 
+# segarkan konfigurasi nginx kalau berubah, lalu wadah yang memakai kode repo
+if [ -f "$APP/current/nginx.conf" ] && { [ ! -f "$APP/nginx.conf" ] || ! cmp -s "$APP/current/nginx.conf" "$APP/nginx.conf"; }; then
+  cp -f "$APP/current/nginx.conf" "$APP/nginx.conf"
+  echo "[$(ts)] konfigurasi nginx disegarkan" >> "$LOG"
+  docker restart onboarding-merchant >/dev/null 2>&1 && echo "[$(ts)] onboarding-merchant di-restart" >> "$LOG"
+fi
+
 # segarkan API kalau wadahnya sudah ada (kode di-current/ di-mount read-only)
 if docker ps -a --format '{{.Names}}' | grep -q '^onboarding-api$'; then
   docker restart onboarding-api >/dev/null 2>&1 && echo "[$(ts)] onboarding-api di-restart" >> "$LOG" \

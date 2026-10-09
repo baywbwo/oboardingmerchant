@@ -209,7 +209,9 @@
 
 <script>
 (function(){
-  var API_BASE = window.ASPRO_API_BASE || (location.protocol + '//' + location.hostname + ':8091');
+  // Satu origin: nginx di port yang sama meneruskan /api ke backend (tanpa port kedua, tanpa CORS).
+  // Bisa ditimpa lewat window.ASPRO_API_BASE bila backend dipisah.
+  var API_BASE = window.ASPRO_API_BASE || '';
   var f = document.getElementById('f'), btn = document.getElementById('btn'), msg = document.getElementById('msg');
   var KEY = 'aspro_l1_draft_v1';
 
