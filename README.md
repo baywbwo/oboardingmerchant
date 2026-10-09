@@ -50,9 +50,9 @@ README.md
   docker network create obm-net      # sekali saja
   # API (kode dari repo, ikut auto-pull)
   docker run -d --name onboarding-api --restart unless-stopped --network obm-net \
-    -v ~/apps/oboardingmerchant/current/api:/app:ro \
-    -v ~/apps/oboardingmerchant/api-data:/app/data -e DRY_RUN=1 \
-    python:3.12-alpine python /app/server.py
+    -v ~/apps/oboardingmerchant/current/api:/srv:ro \
+    -v obm-api-data:/data -e DRY_RUN=1 -e LOG_FILE=/data/apply.log \
+    python:3.12-alpine python /srv/server.py
   # halaman + proxy
   docker run -d --name onboarding-merchant --restart unless-stopped --network obm-net \
     -p 8090:80 -v ~/apps/oboardingmerchant/current:/usr/share/nginx/html:ro \
