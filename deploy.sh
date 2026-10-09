@@ -29,3 +29,10 @@ else
   (cd "$SRC" && tar --exclude=.git -cf - .) | (cd "$APP/current" && tar -xf -) >> "$LOG" 2>&1
 fi
 echo "[$(ts)] sinkron selesai dari $KET (berkas: $(find "$APP/current" -type f | wc -l))" >> "$LOG"
+
+# pengaman: kalau sumber tidak punya index.html (mis. branch main masih berisi zip),
+# sajikan placeholder supaya situs tidak jadi 403
+if [ ! -f "$APP/current/index.html" ] && [ -f "$APP/placeholder/index.html" ]; then
+  rsync -a --delete "$APP/placeholder/" "$APP/current/" >> "$LOG" 2>&1
+  echo "[$(ts)] tidak ada index.html di sumber -> placeholder disajikan" >> "$LOG"
+fi
