@@ -61,6 +61,18 @@ README.md
 - Otomatisasi: cron tiap 5 menit menjalankan `deploy.sh` (pull → sinkron → restart API)
 - **Alur update:** push ke repo ini → dalam ≤5 menit server menarik & menyajikan versi baru
 
+
+## Ke mana data L1 masuk (satu submit = dua baris tertaut)
+1. **`Merchant & Client`** — master calon merchant: `Nama Usaha / Brand`, `Kategori Usaha`, `Nama Kontak`, `No. HP`, `Email`,
+   `Wilayah`, `Kota / Kabupaten`, `Estimasi Nilai Transaksi / Bulan`, `Status Merchant = Onboarding`, `Status KYC = Belum`,
+   `Sumber Data = Form Aplikasi (L1)`, `Referensi Aplikasi`, `Catatan Klien`
+2. **`Pipeline Akuisisi`** — prospeknya, ditautkan lewat `Corresponding client`:
+   `Nama Usaha/Merchant`, `Tahap Akuisisi = Prospek`, `Layanan` (multi-select), `Estimasi Nilai Transaksi / Bulan`,
+   `Sumber Lead`, `Catatan`, `Company`
+
+Catatan opsi: `Sumber Lead` di Pipeline hanya punya Canvassing/Referral/Partner/Inbound/Event — nilai `Database`
+(tersedia di Merchant & Client) tidak dikirim ke Pipeline sampai opsinya ditambahkan.
+
 ## Yang belum ada
 - Kredensial app untuk tulis ke Base Sales (mode `live`) — jalurnya lewat Administrator
 - Rate-limit / captcha untuk form publik, dan penguncian CORS ke origin sendiri
