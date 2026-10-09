@@ -3,413 +3,280 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Formulir CDD Self-Service — Calon Merchant QRIS (Prototipe)</title>
+<title>Pendaftaran Merchant QRIS — QASH for Business</title>
 <style>
-  :root{
-    --qash:#58EA60; --eco:#04CA02; --mint:#D5FDC8; --volt:#0077FF; --sapphire:#003571;
-    --ink:#0B1B33; --ink2:#38506E; --muted:#6B7A90; --line:#DCE4EC; --bg:#F3F7F9; --surface:#FFFFFF;
-    --warn:#B4791A; --bad:#B32B2B; --ok:#047A02;
-    --radius:14px; --shadow:0 1px 2px rgba(11,27,51,.06), 0 8px 24px rgba(11,27,51,.06);
-  }
+  :root{--brand:#0b5cff;--brand-dark:#0843bd;--ink:#101828;--muted:#667085;--line:#e4e7ec;--ok:#12805c;--warn:#b54708;--bg:#f7f8fb}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-       font-family:"Nunito","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;font-size:14px;line-height:1.5}
-  header.top{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-  .wrap{max-width:880px;margin:0 auto;padding:0 18px}
-  .topin{display:flex;align-items:center;gap:12px;height:64px}
-  .logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.2px}
-  .mark{width:26px;height:26px;border-radius:8px;background:var(--eco);display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
-  .top .sub{color:var(--muted);font-size:12.5px;margin-left:auto}
-  .hero{background:var(--qash);color:var(--sapphire);padding:20px 0 22px;border-bottom:1px solid rgba(0,53,113,.10)}
-  .hero h1{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.2px}
-  .hero p{margin:0;font-size:13px;opacity:.85}
-  main{padding:20px 0 60px}
-  .steps{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
-  .step{flex:1;min-width:110px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--muted)}
-  .step b{display:block;font-size:12.5px;color:var(--ink2)}
-  .step.on{border-color:var(--eco);background:#F1FDEC}
-  .step.on b{color:var(--eco)}
-  .step.done{border-color:var(--mint);background:#F7FEF4}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
-  .card h2{margin:0 0 4px;font-size:16px;font-weight:800;letter-spacing:-.2px}
-  .card .hint{color:var(--muted);font-size:12.5px;margin-bottom:14px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .grid.one{grid-template-columns:1fr}
-  @media(max-width:680px){.grid{grid-template-columns:1fr}.steps{flex-direction:column}}
-  label{display:block;font-weight:700;font-size:12.5px;margin-bottom:5px}
-  label span.req{color:var(--bad)}
-  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
-    width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
-  textarea{min-height:80px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:2px solid rgba(4,202,2,.35);border-color:var(--eco)}
-  .fld{position:relative}
-  .err{border-color:var(--bad)!important}
-  .msg{font-size:12px;color:var(--bad);margin-top:4px;display:none}
-  .msg.show{display:block}
-  .checkline{font-size:12px;color:var(--ok);margin-top:4px;display:none}
-  .checkline.show{display:block}
-  .file{border:1.5px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);background:#FBFDFE}
-  .file b{display:block;color:var(--ink2);font-size:13px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-size:12px;display:flex;gap:6px;align-items:center}
-  .chip.ok{border-color:var(--mint);background:#F5FEF1;color:var(--ok)}
-  .chip.warn{border-color:#F6E2BE;background:#FFF9EE;color:var(--warn)}
-  .chip.bad{border-color:#F3D2D2;background:#FFF6F6;color:var(--bad)}
-  .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:700}
-  .pill.low{background:#EDFBEA;color:var(--ok)}
-  .pill.mid{background:#FFF6E5;color:var(--warn)}
-  .pill.high{background:#FDEDED;color:var(--bad)}
-  .pill.info{background:#EAF3FF;color:#0A5AC2}
-  .row{display:flex;gap:10px;align-items:center}
-  .between{justify-content:space-between}
-  .btn{border-radius:10px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;border:1px solid transparent}
-  .btn.primary{background:var(--sapphire);color:#fff}
-  .btn.grad{background:linear-gradient(-45deg,var(--qash),var(--volt));color:#062a10}
-  .btn.ghost{background:#fff;border-color:var(--line);color:var(--ink2)}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:800}
-  .ok-box{background:#F5FEF1;border:1px solid var(--mint);border-radius:12px;padding:14px}
-  .note{background:#FBFDFE;border:1px dashed var(--line);border-radius:12px;padding:12px;color:var(--muted);font-size:12.5px}
-  .scan{display:none;align-items:center;gap:10px;color:var(--ink2);font-size:13px;background:#F7FAFF;border:1px solid #E3EDFB;border-radius:12px;padding:12px}
-  .scan.show{display:flex}
-  .spinner{width:16px;height:16px;border-radius:50%;border:2px solid #CFE2FF;border-top-color:var(--volt);animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .hide{display:none!important}
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:20}
-  .toast.show{opacity:1}
-  footer{color:var(--muted);font-size:12px;text-align:center;padding:0 0 30px}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px}
+  header{margin-bottom:18px}
+  .kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-weight:700}
+  h1{font-size:26px;line-height:1.25;margin:6px 0 8px}
+  .sub{color:var(--muted);margin:0}
+  .notice{background:#eef4ff;border:1px solid #cfdcff;border-radius:12px;padding:12px 14px;margin:16px 0;font-size:14px}
+  .notice b{color:var(--brand-dark)}
+  fieldset{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px;margin:0 0 16px}
+  legend{padding:0 8px;font-weight:700;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .col{display:flex;flex-direction:column;gap:6px}
+  .full{grid-column:1/-1}
+  label{font-weight:600;font-size:13.5px}
+  label .opt{color:var(--muted);font-weight:500}
+  input,select,textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%}
+  input:focus,select:focus,textarea:focus{outline:2px solid #cddafc;border-color:var(--brand)}
+  .hint{font-size:12.5px;color:var(--muted)}
+  .err{font-size:12.5px;color:#b42318;display:none}
+  .bad input,.bad select{border-color:#b42318}
+  .bad .err{display:block}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13.5px;cursor:pointer;user-select:none;background:#fff}
+  .chip input{display:none}
+  .chip:has(input:checked){border-color:var(--brand);background:#eef4ff;color:var(--brand-dark);font-weight:600}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:6px 0 0}
+  .consent input{width:auto;margin-top:3px}
+  .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;font-weight:700;padding:13px 22px;border:0;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
+  button:hover{background:var(--brand-dark)}
+  button[disabled]{opacity:.6;cursor:progress}
+  .done{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;display:none}
+  .done h2{margin:0 0 8px;font-size:20px}
+  .ref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;background:#f2f4f7;padding:10px 12px;border-radius:10px;display:inline-block;margin:6px 0}
+  .msg{margin-top:12px;font-size:14px;display:none;border-radius:10px;padding:10px 12px}
+  .msg.bad{display:block;background:#fef3f2;border:1px solid #fecdca;color:#b42318}
+  .msg.good{display:block;background:#ecfdf3;border:1px solid #abefc6;color:var(--ok)}
+  footer{color:var(--muted);font-size:12.5px;margin-top:10px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}h1{font-size:22px}}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <div class="kicker">QASH for Business · Deca</div>
+    <h1>Pendaftaran Merchant QRIS</h1>
+    <p class="sub">Isi form ini dulu — cukup ~2 menit. Tim kami akan menghubungi Anda untuk lanjut ke proses berikutnya.</p>
+  </header>
 
-<header class="top">
-  <div class="wrap topin">
-    <div class="logo"><span class="mark">Q</span> QASH <span style="font-weight:600;color:var(--muted)">Business</span></div>
-    <div class="sub">Formulir CDD — Calon Merchant QRIS</div>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="wrap">
-    <h1>Formulir Pendaftaran Merchant QRIS</h1>
-    <p>Isi datanya sendiri, sistem akan memvalidasi &amp; memeriksa kelengkapan secara otomatis (CDD by system).</p>
-  </div>
-</section>
-
-<main class="wrap">
-  <div class="steps" id="steps">
-    <div class="step on" data-s="1"><b>1. Identitas</b>Pemilik &amp; badan usaha</div>
-    <div class="step" data-s="2"><b>2. Data Usaha</b>Profil &amp; transaksi</div>
-    <div class="step" data-s="3"><b>3. Dokumen</b>Unggah berkas</div>
-    <div class="step" data-s="4"><b>4. Pemeriksaan</b>Screening otomatis</div>
-    <div class="step" data-s="5"><b>5. Ringkasan</b>Kirim pengajuan</div>
+  <div class="notice">
+    <b>Ngapain isi dokumen di sini? Nggak perlu.</b><br>
+    KTP, NPWP, NIB, buku rekening, dan selfie <b>tidak</b> diminta di form ini. Dokumen itu diminta
+    <b>sekali saja nanti saat proses verifikasi (KYC)</b>, setelah akun QASH for Business Anda aktif.
   </div>
 
-  <!-- STEP 1 -->
-  <section class="card" data-step="1">
-    <h2>1. Identitas pemilik &amp; badan usaha</h2>
-    <div class="hint">Data ini dipakai untuk verifikasi identitas (CDD). Sistem memeriksa format &amp; kelengkapan saat Anda lanjut.</div>
-    <div class="grid">
-      <div class="fld"><label>Jenis badan usaha <span class="req">*</span></label>
-        <select id="badan" onchange="markDirty()">
-          <option value="">Pilih…</option><option>Perorangan</option><option>PT</option><option>CV</option><option>Yayasan</option><option>Koperasi</option>
-        </select><div class="msg"></div></div>
-      <div class="fld"><label>Nama pemilik (sesuai KTP) <span class="req">*</span></label>
-        <input type="text" id="pemilik" placeholder="Nama lengkap" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>NIK <span class="req">*</span></label>
-        <input type="text" id="nik" inputmode="numeric" maxlength="16" placeholder="16 digit" oninput="markDirty()">
-        <div class="msg"></div><div class="checkline" id="ok-nik"></div></div>
-      <div class="fld"><label>NPWP <span class="req">*</span></label>
-        <input type="text" id="npwp" inputmode="numeric" maxlength="16" placeholder="15–16 digit" oninput="markDirty()">
-        <div class="msg"></div><div class="checkline" id="ok-npwp"></div></div>
-      <div class="fld"><label>Tanggal lahir <span class="req">*</span></label>
-        <input type="date" id="lahir" onchange="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>No. HP / WhatsApp <span class="req">*</span></label>
-        <input type="tel" id="hp" placeholder="08xxxxxxxxxx" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>Email <span class="req">*</span></label>
-        <input type="email" id="email" placeholder="nama@usaha.com" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>Alamat domisili <span class="req">*</span></label>
-        <input type="text" id="domisili" placeholder="Jalan, No., RT/RW, Kel., Kec., Kota" oninput="markDirty()"><div class="msg"></div></div>
-    </div>
-    <div class="row between" style="margin-top:16px">
-      <span class="note" style="flex:1">Sudah diisi otomatis? Bisa. Prototipe ini menyimpan draf di perangkat Anda.</span>
-      <button class="btn primary" onclick="next(1)">Lanjut</button>
-    </div>
-    <div class="scan" id="scan1" style="margin-top:12px"><div class="spinner"></div><div id="scan1txt">Sistem memeriksa format NIK, NPWP, usia, dan duplikasi…</div></div>
-    <div id="res1" style="margin-top:12px"></div>
-  </section>
-
-  <!-- STEP 2 -->
-  <section class="card hide" data-step="2">
-    <h2>2. Data usaha &amp; profil transaksi</h2>
-    <div class="hint">Dipakai untuk analisis risiko dan penentuan skema harga (MDR).</div>
-    <div class="grid">
-      <div class="fld"><label>Nama usaha / brand <span class="req">*</span></label><input type="text" id="usaha" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>Kategori usaha <span class="req">*</span></label>
-        <select id="kategori" onchange="markDirty()"><option value="">Pilih…</option><option>Makanan &amp; Minuman</option><option>Retail / Toko</option><option>Jasa</option><option>Kesehatan</option><option>Pendidikan</option><option>Lainnya</option></select>
-        <div class="msg"></div></div>
-      <div class="fld"><label>Alamat lokasi usaha <span class="req">*</span></label><input type="text" id="alamatUsaha" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>Kota / Kabupaten <span class="req">*</span></label><input type="text" id="kota" oninput="markDirty()"><div class="msg"></div></div>
-      <div class="fld"><label>Lama usaha berdiri</label>
-        <select id="lama" onchange="markDirty()"><option value="">Pilih…</option><option>&lt; 1 tahun</option><option>1–3 tahun</option><option>&gt; 3 tahun</option></select></div>
-      <div class="fld"><label>Jumlah outlet</label><input type="number" id="outlet" min="1" value="1" oninput="markDirty()"></div>
-      <div class="fld"><label>Estimasi transaksi QRIS / bulan <span class="req">*</span></label>
-        <select id="volume" onchange="markDirty()"><option value="">Pilih…</option><option>&lt; Rp 5 juta</option><option>Rp 5–25 juta</option><option>Rp 25–100 juta</option><option>&gt; Rp 100 juta</option></select>
-        <div class="msg"></div></div>
-      <div class="fld"><label>Sumber dana / setoran</label>
-        <select id="dana" onchange="markDirty()"><option value="">Pilih…</option><option>Penjualan tunai</option><option>Transfer bank</option><option>Campuran</option></select></div>
-      <div class="fld"><label>Rekening settlement — bank</label><input type="text" id="bank" placeholder="cth. BCA / Mandiri" oninput="markDirty()"></div>
-      <div class="fld"><label>Nomor rekening</label><input type="text" id="rek" inputmode="numeric" oninput="markDirty()"></div>
-      <div class="fld grid one" style="display:block"><label>Diajukan lewat</label>
-        <select id="jalur" onchange="markDirty()"><option>Saya sendiri (langsung)</option><option>Partner / Aggregator</option><option>Referral/agen</option></select></div>
-      <div class="fld" style="display:block"><label>Nama partner (bila ada)</label><input type="text" id="partner" oninput="markDirty()"></div>
-    </div>
-    <div class="row between" style="margin-top:16px">
-      <button class="btn ghost" onclick="prev(2)">Kembali</button><button class="btn primary" onclick="next(2)">Lanjut</button>
-    </div>
-  </section>
-
-  <!-- STEP 3 -->
-  <section class="card hide" data-step="3">
-    <h2>3. Unggah dokumen</h2>
-    <div class="hint">Sistem memeriksa jenis &amp; ukuran berkas, lalu menandai dokumen yang perlu diverifikasi manual.</div>
-    <div class="grid">
-      <div class="fld"><label>KTP pemilik <span class="req">*</span></label><div class="file"><b>Pilih file KTP</b>JPG/PNG/PDF maks 5 MB<input type="file" id="f_ktp" style="margin-top:8px" onchange="markDirty()"></div><div class="msg"></div></div>
-      <div class="fld"><label>NPWP <span class="req">*</span></label><div class="file"><b>Pilih file NPWP</b>JPG/PNG/PDF maks 5 MB<input type="file" id="f_npwp" style="margin-top:8px" onchange="markDirty()"></div><div class="msg"></div></div>
-      <div class="fld"><label>NIB / izin usaha</label><div class="file"><b>Pilih file NIB</b>Opsional untuk perorangan<input type="file" id="f_nib" style="margin-top:8px" onchange="markDirty()"></div></div>
-      <div class="fld"><label>Buku rekening / tabungan <span class="req">*</span></label><div class="file"><b>Pilih file</b>Halaman depan buku rekening<input type="file" id="f_rek" style="margin-top:8px" onchange="markDirty()"></div><div class="msg"></div></div>
-      <div class="fld"><label>Foto lokasi usaha <span class="req">*</span></label><div class="file"><b>Pilih foto</b>Terlihat papan nama / area transaksi<input type="file" id="f_lokasi" style="margin-top:8px" onchange="markDirty()"></div><div class="msg"></div></div>
-      <div class="fld"><label>Selfie pemilik <span class="req">*</span></label><div class="file"><b>Ambil / pilih foto</b>Untuk pencocokan wajah (liveness)<input type="file" id="f_selfie" accept="image/*" style="margin-top:8px" onchange="markDirty()"></div><div class="msg"></div></div>
-    </div>
-    <div class="row between" style="margin-top:16px">
-      <button class="btn ghost" onclick="prev(3)">Kembali</button><button class="btn primary" onclick="next(3)">Lanjut</button>
-    </div>
-  </section>
-
-  <!-- STEP 4 -->
-  <section class="card hide" data-step="4">
-    <h2>4. Pemeriksaan otomatis (screening &amp; risiko)</h2>
-    <div class="hint">Bagian ini yang biasanya dikerjakan manual — di sini dijalankan sistem setelah data lengkap.</div>
-    <button class="btn grad" onclick="runScreening()">Jalankan pemeriksaan</button>
-    <div class="scan" id="scan4" style="margin-top:12px"><div class="spinner"></div><div id="scan4txt">Memeriksa daftar sanksi, PEP, duplikasi merchant, dan profil risiko…</div></div>
-    <div id="res4" style="margin-top:12px"></div>
-    <div class="row between" style="margin-top:16px">
-      <button class="btn ghost" onclick="prev(4)">Kembali</button><button class="btn primary" id="btn4" onclick="next(4)" disabled>Lanjut</button>
-    </div>
-  </section>
-
-  <!-- STEP 5 -->
-  <section class="card hide" data-step="5">
-    <h2>5. Ringkasan &amp; kirim pengajuan</h2>
-    <div class="hint">Periksa kembali. Setelah dikirim, sistem membuat nomor referensi dan meneruskan ke verifikator.</div>
-    <div id="summary"></div>
-    <label class="row" style="margin-top:14px;align-items:flex-start;gap:10px;font-weight:600">
-      <input type="checkbox" id="consent" onchange="markDirty()" style="margin-top:3px">
-      <span>Saya menyatakan data yang diisi benar, dan **menyetujui pemrosesan data pribadi** untuk keperluan verifikasi (CDD) sesuai ketentuan pelindungan data pribadi.</span>
-    </label>
-    <div class="row between" style="margin-top:16px">
-      <button class="btn ghost" onclick="prev(5)">Kembali</button>
-      <button class="btn grad" id="btnSubmit" onclick="submitForm()">Kirim pengajuan</button>
-    </div>
-  </section>
-
-  <section class="card hide" id="doneCard">
-    <div class="ok-box">
-      <div class="row between">
-        <div><h2 style="margin:0">Pengajuan diterima ✅</h2>
-        <div class="hint" style="margin:4px 0 0">Tim verifikasi akan menindaklanjuti sesuai SLA di bawah.</div></div>
-        <span class="pill info" id="refPill">—</span>
+  <form id="f" novalidate>
+    <fieldset>
+      <legend>1 · Usaha</legend>
+      <div class="grid">
+        <div class="col full" data-f>
+          <label for="nama_usaha">Nama usaha / brand <span class="opt">*</span></label>
+          <input id="nama_usaha" name="nama_usaha" required placeholder="cth: Kopi Senja">
+          <div class="err">Nama usaha wajib diisi.</div>
+        </div>
+        <div class="col" data-f>
+          <label for="kategori">Kategori usaha <span class="opt">*</span></label>
+          <select id="kategori" name="kategori" required>
+            <option value="">Pilih…</option>
+            <option>Makanan &amp; Minuman</option>
+            <option>Retail / Toko</option>
+            <option>Jasa</option>
+            <option>Kesehatan</option>
+            <option>Pendidikan</option>
+            <option>Lainnya</option>
+          </select>
+          <div class="err">Kategori wajib dipilih.</div>
+        </div>
+        <div class="col">
+          <label for="skala">Skala usaha <span class="opt">(opsional)</span></label>
+          <select id="skala" name="skala">
+            <option value="">Pilih…</option>
+            <option>Mikro</option><option>Kecil</option><option>Menengah</option><option>Besar</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="badan_usaha">Jenis badan usaha <span class="opt">(opsional)</span></label>
+          <select id="badan_usaha" name="badan_usaha">
+            <option value="">Pilih…</option>
+            <option>Perorangan</option><option>PT</option><option>CV</option><option>Yayasan</option><option>Koperasi</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="jumlah_outlet">Jumlah outlet <span class="opt">(opsional)</span></label>
+          <input id="jumlah_outlet" name="jumlah_outlet" type="number" min="1" step="1" placeholder="cth: 1">
+        </div>
+        <div class="col full">
+          <label for="estimasi">Estimasi nilai transaksi / bulan <span class="opt">(opsional)</span></label>
+          <input id="estimasi" name="estimasi" inputmode="numeric" placeholder="cth: 25000000">
+          <div class="hint">Nggak harus tepat — dipakai untuk memprioritaskan tindak lanjut.</div>
+        </div>
+        <div class="col full">
+          <label>Layanan yang diminati <span class="opt">(opsional)</span></label>
+          <div class="chips" id="layanan">
+            <label class="chip"><input type="checkbox" name="layanan" value="QRIS MPM"><span>QRIS MPM</span></label>
+            <label class="chip"><input type="checkbox" name="layanan" value="QRIS CPM"><span>QRIS CPM</span></label>
+            <label class="chip"><input type="checkbox" name="layanan" value="Payment Gateway"><span>Payment Gateway</span></label>
+            <label class="chip"><input type="checkbox" name="layanan" value="Direct Payment"><span>Direct Payment</span></label>
+            <label class="chip"><input type="checkbox" name="layanan" value="Bill Payment"><span>Bill Payment</span></label>
+            <label class="chip"><input type="checkbox" name="layanan" value="Transfer / Disbursement"><span>Transfer / Disbursement</span></label>
+          </div>
+        </div>
       </div>
-      <table style="margin-top:12px">
-        <tr><th style="width:38%">Nomor referensi</th><td id="refNo">—</td></tr>
-        <tr><th>Status awal</th><td>Diterima — menunggu verifikasi</td></tr>
-        <tr><th>Hasil pemeriksaan otomatis</th><td id="doneRisk">—</td></tr>
-        <tr><th>Perkiraan tindak lanjut</th><td id="doneSla">—</td></tr>
-      </table>
-    </div>
-    <div class="note" style="margin-top:14px">Simpan nomor referensi untuk pengecekan status. Anda akan menerima notifikasi lewat email/WhatsApp yang didaftarkan.</div>
-    <button class="btn ghost" style="margin-top:14px" onclick="window.print()">Cetak ringkasan</button>
-  </section>
+    </fieldset>
 
-  <footer>Prototipe internal · data tidak dikirim ke server mana pun · struktur mengikuti rancangan tabel <code>Prospect</code> &amp; <code>Merchant</code></footer>
-</main>
+    <fieldset>
+      <legend>2 · Kontak penanggung jawab</legend>
+      <div class="grid">
+        <div class="col" data-f>
+          <label for="nama_pemilik">Nama penanggung jawab <span class="opt">*</span></label>
+          <input id="nama_pemilik" name="nama_pemilik" required placeholder="Nama lengkap">
+          <div class="err">Nama wajib diisi.</div>
+        </div>
+        <div class="col" data-f>
+          <label for="hp">No. HP / WhatsApp <span class="opt">*</span></label>
+          <input id="hp" name="hp" required inputmode="tel" placeholder="cth: 08123456789">
+          <div class="err">Isi nomor HP/WhatsApp yang valid (08… atau 62…).</div>
+        </div>
+        <div class="col full" data-f>
+          <label for="email">Email <span class="opt">*</span></label>
+          <input id="email" name="email" type="email" required placeholder="nama@usaha.com">
+          <div class="err">Email wajib diisi dan formatnya benar.</div>
+          <div class="hint">Dipakai untuk kirim akses akun QASH for Business nanti.</div>
+        </div>
+      </div>
+    </fieldset>
 
-<div class="toast" id="toast"></div>
+    <fieldset>
+      <legend>3 · Lokasi &amp; asal</legend>
+      <div class="grid">
+        <div class="col" data-f>
+          <label for="wilayah">Wilayah <span class="opt">*</span></label>
+          <select id="wilayah" name="wilayah" required>
+            <option value="">Pilih…</option>
+            <option>Jakarta</option><option>Jawa Barat</option><option>Banten</option><option>Jawa Tengah</option>
+            <option>Jawa Timur</option><option>Bali</option><option>Sumatera</option><option>Kalimantan</option>
+            <option>Sulawesi</option><option>Nasional</option>
+          </select>
+          <div class="err">Wilayah wajib dipilih.</div>
+        </div>
+        <div class="col" data-f>
+          <label for="kota">Kota / Kabupaten <span class="opt">*</span></label>
+          <input id="kota" name="kota" required placeholder="cth: Depok">
+          <div class="err">Kota/kabupaten wajib diisi.</div>
+        </div>
+        <div class="col full">
+          <label for="alamat">Alamat lokasi usaha <span class="opt">(opsional, singkat saja)</span></label>
+          <textarea id="alamat" name="alamat" rows="2" placeholder="cth: Jl. Margonda Raya No. 10, lantai 1"></textarea>
+        </div>
+        <div class="col">
+          <label for="sumber_lead">Diajukan lewat <span class="opt">(opsional)</span></label>
+          <select id="sumber_lead" name="sumber_lead">
+            <option value="">Pilih…</option>
+            <option>Canvassing</option><option>Referral</option><option>Partner</option>
+            <option>Inbound</option><option>Event</option><option>Database</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="partner">Nama partner / agen <span class="opt">(kalau ada)</span></label>
+          <input id="partner" name="partner" placeholder="cth: PT Mitra QR">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>4 · Konfirmasi</legend>
+      <label class="consent" data-f id="consentWrap">
+        <input type="checkbox" id="consent" name="consent" required>
+        <span>Saya menyatakan data di atas benar dan setuju dihubungi tim Deca (WhatsApp/email) untuk proses pendaftaran. <span class="opt">*</span>
+          <span class="err">Perlu dicentang untuk melanjutkan.</span>
+        </span>
+      </label>
+      <div class="actions" style="margin-top:16px">
+        <button type="submit" id="btn">Kirim pendaftaran</button>
+        <span class="hint" id="draft"></span>
+      </div>
+      <div class="msg" id="msg"></div>
+    </fieldset>
+  </form>
+
+  <div class="done" id="done">
+    <h2>Pendaftaran terkirim ✅</h2>
+    <p>Terima kasih! Nomor referensi Anda:</p>
+    <div class="ref" id="refOut">—</div>
+    <p class="hint">Langkah berikutnya: tim Deca menghubungi Anda via WhatsApp/email. Setelah akun <b>QASH for Business</b> aktif,
+    proses verifikasi (KYC) dilakukan <b>sekali</b> dengan menyiapkan KTP, NPWP, dan (bila ada) NIB. Setelah itu merchant QRIS Anda diaktifkan.</p>
+  </div>
+
+  <footer>Deca — QASH for Business · form pendaftaran awal (L1). Dokumen verifikasi tidak dikumpulkan di sini.</footer>
+</div>
 
 <script>
-const S = {step:1, screening:null, risk:null};
-const $ = s => document.querySelector(s);
-const D = id => (document.getElementById(id).value || "").trim();
-const setErr = (id, text) => {
-  const el = document.getElementById(id), box = el.closest('.fld').querySelector('.msg');
-  if (text) { el.classList.add('err'); box.textContent = text; box.classList.add('show'); return false; }
-  el.classList.remove('err'); box.classList.remove('show'); return true;
-};
-const markDirty = () => {};
-const toast = t => { const el = $('#toast'); el.textContent = t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 2200); };
+(function(){
+  var API_BASE = window.ASPRO_API_BASE || (location.protocol + '//' + location.hostname + ':8091');
+  var f = document.getElementById('f'), btn = document.getElementById('btn'), msg = document.getElementById('msg');
+  var KEY = 'aspro_l1_draft_v1';
 
-function showStep(n) {
-  S.step = n;
-  document.querySelectorAll('[data-step]').forEach(c => c.classList.add('hide'));
-  const card = document.querySelector('[data-step="' + n + '"]');
-  if (card) card.classList.remove('hide');
-  document.querySelectorAll('#steps .step').forEach(el => {
-    const s = +el.dataset.s; el.classList.toggle('on', s === n); el.classList.toggle('done', s < n);
-  });
-  window.scrollTo({top: 0, behavior: 'smooth'});
-  if (n === 5) renderSummary();
-}
-const next = n => { if (n === 1) return validate1(); if (n === 2) return validate2(); if (n === 3) return validate3(); if (n === 4) return showStep(5); };
-const prev = n => showStep(n - 1);
+  // pulihkan draf (tanpa berkas apa pun — form ini tidak mengumpulkan dokumen)
+  try {
+    var d = JSON.parse(localStorage.getItem(KEY) || '{}');
+    Object.keys(d).forEach(function(k){
+      if (k === 'layanan') { (d.layanan||[]).forEach(function(v){
+          var el = f.querySelector('input[name="layanan"][value="'+v+'"]'); if (el) el.checked = true; }); return; }
+      var el = f.elements[k]; if (el && typeof el.value === 'string') el.value = d[k];
+    });
+    if (Object.keys(d).length) document.getElementById('draft').textContent = 'Draf dipulihkan dari perangkat ini.';
+  } catch(e) {}
 
-// ---------- validasi otomatis step 1 ----------
-function validate1() {
-  let ok = true;
-  ok &= setErr('badan', D('badan') ? '' : 'Pilih jenis badan usaha');
-  ok &= setErr('pemilik', D('pemilik').length >= 3 ? '' : 'Nama pemilik minimal 3 karakter');
-  const nik = D('nik');
-  ok &= setErr('nik', /^\d{16}$/.test(nik) ? '' : 'NIK harus 16 digit angka');
-  const npwp = D('npwp');
-  ok &= setErr('npwp', /^\d{15,16}$/.test(npwp) ? '' : 'NPWP 15–16 digit angka');
-  const lahir = D('lahir');
-  let umur = null;
-  if (lahir) { umur = Math.floor((Date.now() - new Date(lahir)) / 3.15576e10); }
-  ok &= setErr('lahir', (lahir && umur >= 17 && umur <= 90) ? '' : 'Tanggal lahir tidak valid (usia minimal 17 tahun)');
-  ok &= setErr('hp', /^0?8\d{7,13}$/.test(D('hp').replace(/[^0-9]/g, '')) ? '' : 'Nomor HP tidak valid');
-  ok &= setErr('email', /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(D('email')) ? '' : 'Format email tidak valid');
-  ok &= setErr('domisili', D('domisili').length >= 8 ? '' : 'Alamat terlalu pendek');
-  if (!ok) { toast('Ada isian yang perlu diperbaiki'); return; }
-
-  $('#scan1').classList.add('show');
-  setTimeout(() => {
-    $('#scan1').classList.remove('show');
-    const chips = ['Format NIK valid', 'Format NPWP valid', 'Usia ' + umur + ' tahun — memenuhi syarat'];
-    // simulasi pemeriksaan duplikasi (deterministik dari NIK)
-    const dup = (parseInt(nik.slice(-2)) % 7 === 0);
-    chips.push(dup ? 'Ditemukan data serupa — perlu verifikasi manual' : 'Tidak ada duplikasi di basis data');
-    $('#res1').innerHTML = '<div class="chips">' + chips.map((c,i) =>
-      '<span class="chip ' + (dup && i === 3 ? 'warn' : 'ok') + '">' + c + '</span>').join('') + '</div>' +
-      (dup ? '<div class="msg show" style="margin-top:8px">Sistem menandai pengajuan ini untuk verifikasi manual (potensi duplikat).</div>' : '');
-    showStep(2);
-  }, 1100);
-}
-
-// ---------- validasi step 2 ----------
-function validate2() {
-  let ok = true;
-  ok &= setErr('usaha', D('usaha').length >= 3 ? '' : 'Nama usaha minimal 3 karakter');
-  ok &= setErr('kategori', D('kategori') ? '' : 'Pilih kategori usaha');
-  ok &= setErr('alamatUsaha', D('alamatUsaha').length >= 8 ? '' : 'Alamat usaha terlalu pendek');
-  ok &= setErr('kota', D('kota').length >= 3 ? '' : 'Isi kota/kabupaten');
-  ok &= setErr('volume', D('volume') ? '' : 'Pilih estimasi transaksi');
-  if (!ok) { toast('Ada isian yang perlu diperbaiki'); return; }
-  showStep(3);
-}
-
-// ---------- validasi step 3 ----------
-function validate3() {
-  let ok = true;
-  const req = {f_ktp:'KTP', f_npwp:'NPWP', f_rek:'buku rekening', f_lokasi:'foto lokasi', f_selfie:'selfie pemilik'};
-  for (const k in req) {
-    const f = document.getElementById(k).files[0];
-    const box = document.getElementById(k).closest('.fld').querySelector('.msg');
-    if (!f) { box.textContent = 'Unggah ' + req[k]; box.classList.add('show'); ok = false;
-              document.getElementById(k).closest('.file').style.borderColor = 'var(--bad)'; continue; }
-    if (f.size > 5 * 1024 * 1024) { box.textContent = 'Ukuran berkas melebihi 5 MB'; box.classList.add('show'); ok = false; continue; }
-    box.classList.remove('show'); document.getElementById(k).closest('.file').style.borderColor = 'var(--line)';
+  function collect(){
+    var o = {}, lay = [];
+    Array.prototype.forEach.call(f.querySelectorAll('input[name="layanan"]:checked'), function(c){ lay.push(c.value); });
+    ['nama_usaha','kategori','skala','badan_usaha','jumlah_outlet','estimasi','nama_pemilik','hp','email',
+     'wilayah','kota','alamat','sumber_lead','partner'].forEach(function(k){
+      var el = f.elements[k]; if (el && el.value.trim() !== '') o[k] = el.value.trim();
+    });
+    if (lay.length) o.layanan = lay;
+    o.consent = f.elements['consent'].checked;
+    return o;
   }
-  if (!ok) { toast('Lengkapi berkas wajib'); return; }
-  showStep(4);
-}
+  f.addEventListener('input', function(){
+    try { localStorage.setItem(KEY, JSON.stringify(collect())); } catch(e) {}
+  });
 
-// ---------- screening & risk (step 4) ----------
-function runScreening() {
-  $('#scan4').classList.add('show');
-  const steps = [
-    'Mencocokkan nama & NIK dengan daftar sanksi (DTTOT/UN/OFAC)…',
-    'Memeriksa status PEP (politically exposed person)…',
-    'Memeriksa duplikasi merchant di basis data…',
-    'Menghitung profil risiko…'
-  ];
-  let i = 0;
-  const t = setInterval(() => { $('#scan4txt').textContent = steps[i++] || steps[steps.length-1]; }, 700);
-  setTimeout(() => {
-    clearInterval(t); $('#scan4').classList.remove('show');
-    S.screening = { sanksi: 'Tidak ada kesamaan', pep: 'Tidak teridentifikasi', dup: 'Tidak ada duplikasi' };
-    // skor risiko sederhana & transparan
-    let score = 0, reasons = [];
-    const kat = D('kategori'), vol = D('volume'), badan = D('badan'), jalur = D('jalur');
-    if (vol === '> Rp 100 juta') { score += 2; reasons.push('estimasi transaksi tinggi'); }
-    else if (vol === 'Rp 25–100 juta') { score += 1; reasons.push('estimasi transaksi menengah'); }
-    if (badan === 'Perorangan') { score += 1; reasons.push('badan usaha perorangan'); }
-    if (kat === 'Lainnya') { score += 1; reasons.push('kategori usaha perlu penilaian tambahan'); }
-    if (jalur !== 'Saya sendiri (langsung)') { score += 1; reasons.push('diajukan lewat partner/agen'); }
-    if ((D('lama') || '') === '< 1 tahun') { score += 1; reasons.push('usaha baru berdiri'); }
-    const level = score >= 4 ? 'high' : score >= 2 ? 'mid' : 'low';
-    const label = {low:'Risiko Rendah', mid:'Risiko Menengah', high:'Risiko Tinggi'}[level];
-    S.risk = {level, label, score, reasons};
-    $('#res4').innerHTML =
-      '<div class="chips">' +
-      '<span class="chip ok">Daftar sanksi: ' + S.screening.sanksi + '</span>' +
-      '<span class="chip ok">PEP: ' + S.screening.pep + '</span>' +
-      '<span class="chip ok">Duplikasi: ' + S.screening.dup + '</span>' +
-      '</div>' +
-      '<div class="ok-box" style="margin-top:12px">' +
-      '<div class="row between"><b>Hasil penilaian risiko</b><span class="pill ' + level + '">' + label + ' (skor ' + score + ')</span></div>' +
-      '<div style="margin-top:6px;color:var(--ink2)">Faktor: ' + (reasons.length ? reasons.join(', ') : 'tidak ada faktor pemberat') + '</div>' +
-      '<div style="margin-top:6px;color:var(--muted)">Tindak lanjut: ' + (level === 'high' ? 'verifikasi dokumen asli + kunjungan lokasi (EDD)' : level === 'mid' ? 'verifikasi dokumen & panggilan konfirmasi' : 'verifikasi dokumen standar (SLA cepat)') + '</div>' +
-      '</div>';
-    $('#btn4').disabled = false;
-    toast('Pemeriksaan selesai');
-  }, 3200);
-}
+  function showError(t){ msg.className = 'msg bad'; msg.textContent = t; msg.scrollIntoView({block:'center'}); }
+  function mark(el, bad){ var c = el.closest('[data-f]'); if (c) c.classList.toggle('bad', !!bad); }
+  function valid(){
+    var ok = true;
+    ['nama_usaha','kategori','nama_pemilik','hp','email','wilayah','kota'].forEach(function(k){
+      var el = f.elements[k], bad = !el.value.trim();
+      if (k === 'hp') bad = bad || !/^(0|\+?62)\d{8,13}$/.test(el.value.replace(/[\s-]/g,''));
+      if (k === 'email') bad = bad || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim());
+      mark(el, bad); if (bad) ok = false;
+    });
+    var c = document.getElementById('consent');
+    document.getElementById('consentWrap').classList.toggle('bad', !c.checked);
+    if (!c.checked) ok = false;
+    return ok;
+  }
 
-// ---------- ringkasan & submit ----------
-function renderSummary() {
-  const rows = [
-    ['Jenis badan usaha', D('badan')], ['Nama pemilik', D('pemilik')],
-    ['NIK', mask(D('nik'))], ['NPWP', mask(D('npwp'))],
-    ['Kontak', D('hp') + ' · ' + D('email')], ['Alamat domisili', D('domisili')],
-    ['Nama usaha', D('usaha')], ['Kategori', D('kategori')],
-    ['Alamat usaha', D('alamatUsaha') + ', ' + D('kota')],
-    ['Lama usaha / outlet', (D('lama') || '-') + ' · ' + (D('outlet') || '1') + ' outlet'],
-    ['Estimasi transaksi/bulan', D('volume')],
-    ['Rekening settlement', (D('bank') || '-') + ' ' + mask(D('rek'))],
-    ['Diajukan lewat', D('jalur') + (D('partner') ? ' — ' + D('partner') : '')],
-    ['Dokumen', 'KTP, NPWP, buku rekening, foto lokasi, selfie']
-  ];
-  const risk = S.risk ? '<span class="pill ' + S.risk.level + '">' + S.risk.label + ' (skor ' + S.risk.score + ')</span>' : '<span class="pill mid">belum dihitung</span>';
-  $('#summary').innerHTML = '<table>' + rows.map(r => '<tr><th style="width:38%">' + r[0] + '</th><td>' + (r[1] || '-') + '</td></tr>').join('') +
-    '<tr><th>Profil risiko</th><td>' + risk + '</td></tr></table>';
-}
-const mask = v => !v ? '-' : v.length <= 4 ? v : v.slice(0, 4) + '••••' + v.slice(-2);
-
-function submitForm() {
-  if (!$('#consent').checked) { toast('Centang pernyataan & persetujuan data pribadi dulu'); return; }
-  const d = new Date(), pad = n => String(n).padStart(2, '0');
-  const ref = 'QRIS-CDD-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + String(Math.floor(Math.random() * 9000) + 1000);
-  $('#refPill').textContent = ref;
-  $('#refNo').textContent = ref;
-  $('#doneRisk').textContent = S.risk ? S.risk.label + ' (skor ' + S.risk.score + ')' : 'Risiko Rendah';
-  const sla = S.risk && S.risk.level === 'high' ? '2–3 hari kerja (verifikasi tambahan + kunjungan lokasi)' : S.risk && S.risk.level === 'mid' ? '1–2 hari kerja (verifikasi dokumen & konfirmasi)' : '< 1 hari kerja (jalur cepat)';
-  $('#doneSla').textContent = sla;
-  document.querySelectorAll('[data-step]').forEach(c => c.classList.add('hide'));
-  $('#steps').classList.add('hide'); $('#doneCard').classList.remove('hide');
-  toast('Pengajuan terkirim');
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-// draf otomatis
-const FIELDS = ['badan','pemilik','nik','npwp','lahir','hp','email','domisili','usaha','kategori','alamatUsaha','kota','lama','outlet','volume','dana','bank','rek','jalur','partner'];
-function saveDraft() { const o = {}; FIELDS.forEach(f => o[f] = D(f)); localStorage.setItem('cdd_draft', JSON.stringify(o)); }
-function loadDraft() {
-  try { const o = JSON.parse(localStorage.getItem('cdd_draft') || '{}');
-    FIELDS.forEach(f => { if (o[f]) document.getElementById(f).value = o[f]; }); } catch (e) {}
-}
-setInterval(saveDraft, 1500);
-loadDraft();
+  f.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    msg.className = 'msg';
+    if (!valid()) { showError('Ada isian yang belum lengkap / belum benar. Cek tanda merah di atas.'); return; }
+    btn.disabled = true; btn.textContent = 'Mengirim…';
+    fetch(API_BASE + '/api/apply', {method:'POST', headers:{'Content-Type':'application/json'},
+                                    body: JSON.stringify(collect())})
+      .then(function(r){ return r.json().then(function(j){ return {s:r.status, j:j}; }); })
+      .then(function(res){
+        if (res.s >= 200 && res.s < 300 && res.j && res.j.ref) {
+          f.style.display = 'none';
+          document.getElementById('refOut').textContent = res.j.ref;
+          var dn = document.getElementById('done'); dn.style.display = 'block'; dn.scrollIntoView({block:'start'});
+          try { localStorage.removeItem(KEY); } catch(e) {}
+        } else {
+          showError((res.j && (res.j.error || (res.j.errors||[]).join(', '))) || 'Pendaftaran gagal diproses. Coba lagi sebentar.');
+        }
+      })
+      .catch(function(){ showError('Nggak bisa menghubungi server pendaftaran. Cek koneksi lalu coba lagi.'); })
+      .then(function(){ btn.disabled = false; btn.textContent = 'Kirim pendaftaran'; });
+  });
+})();
 </script>
 </body>
 </html>

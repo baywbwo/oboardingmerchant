@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy otomatis: tarik perubahan dari GitHub -> sinkronkan ke folder yang disajikan nginx.
+# Deploy otomatis: tarik perubahan dari GitHub -> sinkronkan ke folder yang disajikan nginx -> segarkan API.
 # Dipasang oleh Aspro (asisten product) 9 Okt 2026. Aman & idempoten.
 # Catatan: "remote masih kosong (belum ada commit)" BUKAN kegagalan -> pakai placeholder.
 set -u
@@ -35,4 +35,10 @@ echo "[$(ts)] sinkron selesai dari $KET (berkas: $(find "$APP/current" -type f |
 if [ ! -f "$APP/current/index.html" ] && [ -f "$APP/placeholder/index.html" ]; then
   rsync -a --delete "$APP/placeholder/" "$APP/current/" >> "$LOG" 2>&1
   echo "[$(ts)] tidak ada index.html di sumber -> placeholder disajikan" >> "$LOG"
+fi
+
+# segarkan API kalau wadahnya sudah ada (kode di-current/ di-mount read-only)
+if docker ps -a --format '{{.Names}}' | grep -q '^onboarding-api$'; then
+  docker restart onboarding-api >/dev/null 2>&1 && echo "[$(ts)] onboarding-api di-restart" >> "$LOG" \
+    || echo "[$(ts)] GAGAL restart onboarding-api" >> "$LOG"
 fi
