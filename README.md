@@ -43,15 +43,35 @@ README.md
 └── deploy.log
 ```
 - Statis: container `onboarding-merchant` (nginx:alpine), port **8090**, mount `current/` read-only
-- API: container `onboarding-api`, port **8091**, mount `current/api` read-only
+- API: container `onboarding-api`, tidak perlu port publik — dipanggil lewat jalur `/api/`
+- **Satu origin:** nginx di port yang sama meneruskan `/api/` ke container API (`nginx.conf`), jadi form memanggil `/api/apply`
+  secara relatif — **cukup satu port yang di-forward**, tanpa CORS, aman dari blocked mixed-content.
   ```
-  docker run -d --name onboarding-api --restart unless-stopped \
-    -p 8091:8091 -v ~/apps/oboardingmerchant/current/api:/app:ro \
-    -v ~/apps/oboardingmerchant/api-data:/app/data -e DRY_RUN=1 \
-    python:3.12-alpine python /app/server.py
+  docker network create obm-net      # sekali saja
+  # API (kode dari repo, ikut auto-pull)
+  docker run -d --name onboarding-api --restart unless-stopped --network obm-net \
+    -v ~/apps/oboardingmerchant/current/api:/srv:ro \
+    -v obm-api-data:/data -e DRY_RUN=1 -e LOG_FILE=/data/apply.log \
+    python:3.12-alpine python /srv/server.py
+  # halaman + proxy
+  docker run -d --name onboarding-merchant --restart unless-stopped --network obm-net \
+    -p 8090:80 -v ~/apps/oboardingmerchant/current:/usr/share/nginx/html:ro \
+    -v ~/apps/oboardingmerchant/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine
   ```
 - Otomatisasi: cron tiap 5 menit menjalankan `deploy.sh` (pull → sinkron → restart API)
 - **Alur update:** push ke repo ini → dalam ≤5 menit server menarik & menyajikan versi baru
+
+
+## Ke mana data L1 masuk (satu submit = dua baris tertaut)
+1. **`Merchant & Client`** — master calon merchant: `Nama Usaha / Brand`, `Kategori Usaha`, `Nama Kontak`, `No. HP`, `Email`,
+   `Wilayah`, `Kota / Kabupaten`, `Estimasi Nilai Transaksi / Bulan`, `Status Merchant = Onboarding`, `Status KYC = Belum`,
+   `Sumber Data = Form Aplikasi (L1)`, `Referensi Aplikasi`, `Catatan Klien`
+2. **`Pipeline Akuisisi`** — prospeknya, ditautkan lewat `Corresponding client`:
+   `Nama Usaha/Merchant`, `Tahap Akuisisi = Prospek`, `Layanan` (multi-select), `Estimasi Nilai Transaksi / Bulan`,
+   `Sumber Lead`, `Catatan`, `Company`
+
+Catatan opsi: `Sumber Lead` di Pipeline hanya punya Canvassing/Referral/Partner/Inbound/Event — nilai `Database`
+(tersedia di Merchant & Client) tidak dikirim ke Pipeline sampai opsinya ditambahkan.
 
 ## Yang belum ada
 - Kredensial app untuk tulis ke Base Sales (mode `live`) — jalurnya lewat Administrator

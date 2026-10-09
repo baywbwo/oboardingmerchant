@@ -5,24 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pendaftaran Merchant QRIS — QASH for Business</title>
 <style>
-  :root{--brand:#0b5cff;--brand-dark:#0843bd;--ink:#101828;--muted:#667085;--line:#e4e7ec;--ok:#12805c;--warn:#b54708;--bg:#f7f8fb}
+  :root{--brand:#0b5cff;--brand-dark:#0843bd;--ink:#101828;--muted:#667085;--line:#e4e7ec;--ok:#12805c;--bg:#f7f8fb}
   *{box-sizing:border-box}
+  html,body{max-width:100%;overflow-x:hidden}
   body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .wrap{max-width:760px;margin:0 auto;padding:28px 18px 64px}
   header{margin-bottom:18px}
-  .kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-weight:700}
+  .kicker{font-size:12px;letter-spacing:.06em;color:var(--brand);font-weight:700}
   h1{font-size:26px;line-height:1.25;margin:6px 0 8px}
   .sub{color:var(--muted);margin:0}
-  .notice{background:#eef4ff;border:1px solid #cfdcff;border-radius:12px;padding:12px 14px;margin:16px 0;font-size:14px}
-  .notice b{color:var(--brand-dark)}
   fieldset{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px;margin:0 0 16px}
-  legend{padding:0 8px;font-weight:700;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  legend{padding:0 8px;font-weight:700;font-size:14px;color:var(--ink)}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .col{display:flex;flex-direction:column;gap:6px}
+  .col{display:flex;flex-direction:column;gap:6px;min-width:0}
   .full{grid-column:1/-1}
   label{font-weight:600;font-size:13.5px}
   label .opt{color:var(--muted);font-weight:500}
-  input,select,textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%}
+  input,select,textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%;max-width:100%}
   input:focus,select:focus,textarea:focus{outline:2px solid #cddafc;border-color:var(--brand)}
   .hint{font-size:12.5px;color:var(--muted)}
   .err{font-size:12.5px;color:#b42318;display:none}
@@ -32,20 +31,34 @@
   .chip{border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13.5px;cursor:pointer;user-select:none;background:#fff}
   .chip input{display:none}
   .chip:has(input:checked){border-color:var(--brand);background:#eef4ff;color:var(--brand-dark);font-weight:600}
-  .consent{display:flex;gap:10px;align-items:flex-start;margin:6px 0 0}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:6px 0 0;font-weight:500}
   .consent input{width:auto;margin-top:3px}
-  .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
   button{font:inherit;font-weight:700;padding:13px 22px;border:0;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer}
   button:hover{background:var(--brand-dark)}
+  button.ghost{background:#fff;color:var(--brand-dark);border:1px solid var(--line)}
   button[disabled]{opacity:.6;cursor:progress}
   .done{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;display:none}
   .done h2{margin:0 0 8px;font-size:20px}
-  .ref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;background:#f2f4f7;padding:10px 12px;border-radius:10px;display:inline-block;margin:6px 0}
+  .ref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;background:#f2f4f7;padding:10px 12px;border-radius:10px;display:inline-block;margin:6px 0;word-break:break-all}
   .msg{margin-top:12px;font-size:14px;display:none;border-radius:10px;padding:10px 12px}
   .msg.bad{display:block;background:#fef3f2;border:1px solid #fecdca;color:#b42318}
   .msg.good{display:block;background:#ecfdf3;border:1px solid #abefc6;color:var(--ok)}
-  footer{color:var(--muted);font-size:12.5px;margin-top:10px}
-  @media(max-width:640px){.grid{grid-template-columns:1fr}h1{font-size:22px}}
+  .brandline{color:var(--muted);font-size:12.5px;margin-top:14px}
+  @media (max-width:640px){
+    .wrap{padding:18px 14px 48px}
+    h1{font-size:21px;margin:4px 0 6px}
+    .sub{font-size:14px}
+    fieldset{padding:14px;border-radius:12px;margin-bottom:12px}
+    legend{font-size:13px}
+    .grid{grid-template-columns:1fr;gap:12px}
+    input,select,textarea{font-size:16px;padding:12px}   /* 16px: cegah zoom otomatis di iOS */
+    .actions{gap:10px}
+    button{width:100%;padding:14px 18px}
+    .done{padding:18px}
+    .done h2{font-size:18px}
+    .chip{font-size:13px;padding:7px 11px}
+  }
 </style>
 </head>
 <body>
@@ -56,18 +69,12 @@
     <p class="sub">Isi form ini dulu — cukup ~2 menit. Tim kami akan menghubungi Anda untuk lanjut ke proses berikutnya.</p>
   </header>
 
-  <div class="notice">
-    <b>Ngapain isi dokumen di sini? Nggak perlu.</b><br>
-    KTP, NPWP, NIB, buku rekening, dan selfie <b>tidak</b> diminta di form ini. Dokumen itu diminta
-    <b>sekali saja nanti saat proses verifikasi (KYC)</b>, setelah akun QASH for Business Anda aktif.
-  </div>
-
   <form id="f" novalidate>
     <fieldset>
       <legend>1 · Usaha</legend>
       <div class="grid">
         <div class="col full" data-f>
-          <label for="nama_usaha">Nama usaha / brand <span class="opt">*</span></label>
+          <label for="nama_usaha">Nama usaha/brand <span class="opt">*</span></label>
           <input id="nama_usaha" name="nama_usaha" required placeholder="cth: Kopi Senja">
           <div class="err">Nama usaha wajib diisi.</div>
         </div>
@@ -102,10 +109,10 @@
           <label for="jumlah_outlet">Jumlah outlet <span class="opt">(opsional)</span></label>
           <input id="jumlah_outlet" name="jumlah_outlet" type="number" min="1" step="1" placeholder="cth: 1">
         </div>
-        <div class="col full">
-          <label for="estimasi">Estimasi nilai transaksi / bulan <span class="opt">(opsional)</span></label>
+        <div class="col">
+          <label for="estimasi">Estimasi transaksi/bulan <span class="opt">(opsional)</span></label>
           <input id="estimasi" name="estimasi" inputmode="numeric" placeholder="cth: 25000000">
-          <div class="hint">Nggak harus tepat — dipakai untuk memprioritaskan tindak lanjut.</div>
+          <div class="hint">Nggak harus tepat.</div>
         </div>
         <div class="col full">
           <label>Layanan yang diminati <span class="opt">(opsional)</span></label>
@@ -130,7 +137,7 @@
           <div class="err">Nama wajib diisi.</div>
         </div>
         <div class="col" data-f>
-          <label for="hp">No. HP / WhatsApp <span class="opt">*</span></label>
+          <label for="hp">No. HP/WhatsApp <span class="opt">*</span></label>
           <input id="hp" name="hp" required inputmode="tel" placeholder="cth: 08123456789">
           <div class="err">Isi nomor HP/WhatsApp yang valid (08… atau 62…).</div>
         </div>
@@ -138,7 +145,6 @@
           <label for="email">Email <span class="opt">*</span></label>
           <input id="email" name="email" type="email" required placeholder="nama@usaha.com">
           <div class="err">Email wajib diisi dan formatnya benar.</div>
-          <div class="hint">Dipakai untuk kirim akses akun QASH for Business nanti.</div>
         </div>
       </div>
     </fieldset>
@@ -157,12 +163,12 @@
           <div class="err">Wilayah wajib dipilih.</div>
         </div>
         <div class="col" data-f>
-          <label for="kota">Kota / Kabupaten <span class="opt">*</span></label>
+          <label for="kota">Kota/kabupaten <span class="opt">*</span></label>
           <input id="kota" name="kota" required placeholder="cth: Depok">
           <div class="err">Kota/kabupaten wajib diisi.</div>
         </div>
         <div class="col full">
-          <label for="alamat">Alamat lokasi usaha <span class="opt">(opsional, singkat saja)</span></label>
+          <label for="alamat">Alamat lokasi usaha <span class="opt">(opsional)</span></label>
           <textarea id="alamat" name="alamat" rows="2" placeholder="cth: Jl. Margonda Raya No. 10, lantai 1"></textarea>
         </div>
         <div class="col">
@@ -174,7 +180,7 @@
           </select>
         </div>
         <div class="col">
-          <label for="partner">Nama partner / agen <span class="opt">(kalau ada)</span></label>
+          <label for="partner">Nama partner/agen <span class="opt">(kalau ada)</span></label>
           <input id="partner" name="partner" placeholder="cth: PT Mitra QR">
         </div>
       </div>
@@ -188,9 +194,8 @@
           <span class="err">Perlu dicentang untuk melanjutkan.</span>
         </span>
       </label>
-      <div class="actions" style="margin-top:16px">
+      <div class="actions">
         <button type="submit" id="btn">Kirim pendaftaran</button>
-        <span class="hint" id="draft"></span>
       </div>
       <div class="msg" id="msg"></div>
     </fieldset>
@@ -200,16 +205,20 @@
     <h2>Pendaftaran terkirim ✅</h2>
     <p>Terima kasih! Nomor referensi Anda:</p>
     <div class="ref" id="refOut">—</div>
-    <p class="hint">Langkah berikutnya: tim Deca menghubungi Anda via WhatsApp/email. Setelah akun <b>QASH for Business</b> aktif,
-    proses verifikasi (KYC) dilakukan <b>sekali</b> dengan menyiapkan KTP, NPWP, dan (bila ada) NIB. Setelah itu merchant QRIS Anda diaktifkan.</p>
+    <p class="hint">Tim Deca akan menghubungi Anda lewat WhatsApp/email untuk langkah berikutnya.</p>
+    <div class="actions">
+      <button type="button" class="ghost" id="home">Kembali ke beranda</button>
+    </div>
   </div>
 
-  <footer>Deca — QASH for Business · form pendaftaran awal (L1). Dokumen verifikasi tidak dikumpulkan di sini.</footer>
+  <p class="brandline">Deca · QASH for Business</p>
 </div>
 
 <script>
 (function(){
-  var API_BASE = window.ASPRO_API_BASE || (location.protocol + '//' + location.hostname + ':8091');
+  // Satu origin: nginx di port yang sama meneruskan /api ke backend (tanpa port kedua, tanpa CORS).
+  // Bisa ditimpa lewat window.ASPRO_API_BASE bila backend dipisah.
+  var API_BASE = window.ASPRO_API_BASE || '';
   var f = document.getElementById('f'), btn = document.getElementById('btn'), msg = document.getElementById('msg');
   var KEY = 'aspro_l1_draft_v1';
 
@@ -221,7 +230,6 @@
           var el = f.querySelector('input[name="layanan"][value="'+v+'"]'); if (el) el.checked = true; }); return; }
       var el = f.elements[k]; if (el && typeof el.value === 'string') el.value = d[k];
     });
-    if (Object.keys(d).length) document.getElementById('draft').textContent = 'Draf dipulihkan dari perangkat ini.';
   } catch(e) {}
 
   function collect(){
@@ -254,6 +262,11 @@
     if (!c.checked) ok = false;
     return ok;
   }
+
+  document.getElementById('home').addEventListener('click', function(){
+    try { localStorage.removeItem(KEY); } catch(e) {}
+    location.href = '/';
+  });
 
   f.addEventListener('submit', function(ev){
     ev.preventDefault();
